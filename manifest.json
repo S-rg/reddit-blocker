@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Reddit Blocker",
+  "version": "1.0.0",
+  "description": "Blocks scrolling on Reddit feeds (home, subreddits).",
+  "content_scripts": [
+    {
+      "matches": ["*://*.reddit.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_start"
+    }
+  ]
+}
