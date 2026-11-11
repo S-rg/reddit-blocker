@@ -6,7 +6,7 @@ A browser extension that stops scrolling on Reddit feeds but lets you read indiv
 |---|---|
 | `reddit.com/` (and `/best`, `/hot`, `/new`, …) | blocked |
 | `/r/<sub>/` (and `/r/<sub>/top`, `/new`, …), `/r/all`, `/r/popular` | blocked |
-| `/r/<sub>/comments/...` (a single post, e.g. from a Google result) | allowed |
+| `/r/<sub>/comments/...` (a single post) | allowed |
 | Search, user profiles, settings, etc. | allowed |
 
 ## Install (Chrome / Edge / Brave)
