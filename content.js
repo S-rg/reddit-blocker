@@ -35,26 +35,43 @@
 
   let blocked = false;
 
-  function showBanner(show) {
-    let banner = document.getElementById("rsb-banner");
-    if (show && !banner && document.body) {
-      banner = document.createElement("div");
-      banner.id = "rsb-banner";
-      banner.textContent = "Feed scrolling blocked";
-      document.body.appendChild(banner);
-      setTimeout(() => banner && banner.remove(), 2500);
-    } else if (!show && banner) {
-      banner.remove();
+  function buildOverlay() {
+    const overlay = document.createElement("div");
+    overlay.id = "rsb-overlay";
+    overlay.innerHTML = `
+      <div class="rsb-card">
+        <h1>Feed blocked</h1>
+        <p>Scrolling Reddit feeds is off.</p>
+        <form class="rsb-search">
+          <input type="search" name="q" placeholder="Search Reddit" autocomplete="off" />
+          <button type="submit">Search</button>
+        </form>
+      </div>`;
+    overlay.querySelector("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const q = overlay.querySelector("input").value.trim();
+      if (q) location.href = `/search/?q=${encodeURIComponent(q)}`;
+    });
+    return overlay;
+  }
+
+  function syncOverlay() {
+    const existing = document.getElementById("rsb-overlay");
+    if (blocked && !existing) {
+      document.documentElement.appendChild(buildOverlay());
+    } else if (!blocked && existing) {
+      existing.remove();
     }
   }
 
   function update() {
     const shouldBlock = isFeed(location.pathname);
-    if (shouldBlock === blocked) return;
-    blocked = shouldBlock;
-    document.documentElement.classList.toggle("rsb-blocked", blocked);
-    if (blocked) window.scrollTo(0, 0);
-    showBanner(blocked);
+    if (shouldBlock !== blocked) {
+      blocked = shouldBlock;
+      document.documentElement.classList.toggle("rsb-blocked", blocked);
+      if (blocked) window.scrollTo(0, 0);
+    }
+    syncOverlay();
   }
 
   const opts = { passive: false, capture: true };
@@ -66,7 +83,4 @@
   setInterval(update, 400);
 
   update();
-  document.addEventListener("DOMContentLoaded", () => {
-    if (blocked) showBanner(true);
-  });
 })();
